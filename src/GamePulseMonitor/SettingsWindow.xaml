@@ -1,0 +1,473 @@
+<Window x:Class="GamePulseMonitor.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="GamePulseMonitor Settings"
+        Icon="Assets/GamePulseMonitor.ico"
+        Width="560"
+        Height="760"
+        MinWidth="540"
+        MinHeight="640"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#101827">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#E8EEF8"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#E8EEF8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,7,0,7"/>
+            <EventSetter Event="Checked" Handler="OnSettingChanged"/>
+            <EventSetter Event="Unchecked" Handler="OnSettingChanged"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="MinWidth" Value="82"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="14,0"/>
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8EA0BA"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,12,0,6"/>
+        </Style>
+        <Style x:Key="HotkeyTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="MinWidth" Value="150"/>
+            <Setter Property="Margin" Value="8,4,0,4"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <EventSetter Event="PreviewKeyDown" Handler="OnHotkeyPreviewKeyDown"/>
+            <EventSetter Event="GotKeyboardFocus" Handler="OnHotkeyGotFocus"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock x:Name="TitleText"
+                       Text="Settings"
+                       FontSize="22"
+                       FontWeight="SemiBold"/>
+            <TextBlock Text="GamePulseMonitor"
+                       Margin="0,3,0,0"
+                       Foreground="#8EA0BA"
+                       FontSize="12"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock x:Name="LanguageTitleText"
+                           Style="{StaticResource SectionTitle}"
+                           Margin="0,0,0,6"
+                           Text="Language"/>
+                <ComboBox x:Name="LanguageComboBox"
+                          Height="30"
+                          SelectionChanged="OnLanguageChanged">
+                    <ComboBoxItem x:Name="ChineseItem" Tag="Chinese" Content="中文"/>
+                    <ComboBoxItem x:Name="EnglishItem" Tag="English" Content="English"/>
+                </ComboBox>
+
+                <CheckBox x:Name="StartWithWindowsCheckBox"
+                          Content="Start with Windows"/>
+
+                <Separator Margin="0,10,0,12"
+                           Background="#2B3A52"/>
+
+                <TextBlock x:Name="OverlayAppearanceTitleText"
+                           Style="{StaticResource SectionTitle}"
+                           Text="Overlay appearance"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="LayoutLabel"
+                               Grid.Row="0"
+                               VerticalAlignment="Center"
+                               Text="Layout"/>
+                    <ComboBox x:Name="LayoutComboBox"
+                              Grid.Row="0"
+                              Grid.Column="1"
+                              Width="150"
+                              Height="30"
+                              Margin="8,4,0,4"
+                              SelectionChanged="OnLayoutChanged">
+                        <ComboBoxItem x:Name="VerticalLayoutItem" Tag="Vertical" Content="Vertical"/>
+                        <ComboBoxItem x:Name="HorizontalLayoutItem" Tag="Horizontal" Content="Horizontal"/>
+                    </ComboBox>
+
+                    <TextBlock x:Name="OverlaySizeLabel"
+                               Grid.Row="1"
+                               VerticalAlignment="Center"
+                               Text="Size"/>
+                    <StackPanel Grid.Row="1"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="8,4,0,4">
+                        <Slider x:Name="OverlayScaleSlider"
+                                Width="112"
+                                Minimum="60"
+                                Maximum="180"
+                                TickFrequency="5"
+                                IsSnapToTickEnabled="True"
+                                ValueChanged="OnOverlaySliderChanged"/>
+                        <TextBlock x:Name="OverlayScaleValueText"
+                                   Width="42"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="BackgroundOpacityLabel"
+                               Grid.Row="2"
+                               VerticalAlignment="Center"
+                               Text="Background opacity"/>
+                    <StackPanel Grid.Row="2"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="8,4,0,4">
+                        <Slider x:Name="BackgroundOpacitySlider"
+                                Width="112"
+                                Minimum="0"
+                                Maximum="100"
+                                TickFrequency="5"
+                                IsSnapToTickEnabled="True"
+                                ValueChanged="OnOverlaySliderChanged"/>
+                        <TextBlock x:Name="BackgroundOpacityValueText"
+                                   Width="42"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="UniformColorLabel"
+                               Grid.Row="3"
+                               VerticalAlignment="Center"
+                               Text="Uniform color"/>
+                    <ComboBox x:Name="UniformColorComboBox"
+                              Grid.Row="3"
+                              Grid.Column="1"
+                              Width="150"
+                              Height="30"
+                              Margin="8,4,0,4"
+                              SelectionChanged="OnUniformColorChanged">
+                        <ComboBoxItem x:Name="UniformCustomItem" Tag="Custom" Content="Custom"/>
+                        <ComboBoxItem x:Name="UniformLightItem" Tag="#F5F7FB" Content="Light"/>
+                        <ComboBoxItem x:Name="UniformCyanItem" Tag="#7DE3FF" Content="Cyan"/>
+                        <ComboBoxItem x:Name="UniformGreenItem" Tag="#58D68D" Content="Green"/>
+                        <ComboBoxItem x:Name="UniformAmberItem" Tag="#FFD166" Content="Amber"/>
+                        <ComboBoxItem x:Name="UniformRedItem" Tag="#FF6B6B" Content="Red"/>
+                        <ComboBoxItem x:Name="UniformVioletItem" Tag="#C9A7FF" Content="Violet"/>
+                    </ComboBox>
+                </Grid>
+
+                <Separator Margin="0,10,0,12"
+                           Background="#2B3A52"/>
+
+                <TextBlock x:Name="HotkeysTitleText"
+                           Style="{StaticResource SectionTitle}"
+                           Text="Hotkeys"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="ToggleOverlayHotkeyLabel"
+                               Grid.Row="0"
+                               VerticalAlignment="Center"
+                               Text="Show / hide overlay"/>
+                    <TextBox x:Name="ToggleOverlayHotkeyTextBox"
+                             Grid.Row="0"
+                             Grid.Column="1"
+                             Style="{StaticResource HotkeyTextBox}"/>
+
+                    <TextBlock x:Name="BenchmarkHotkeyLabel"
+                               Grid.Row="1"
+                               VerticalAlignment="Center"
+                               Text="Start / stop benchmark"/>
+                    <TextBox x:Name="BenchmarkHotkeyTextBox"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Style="{StaticResource HotkeyTextBox}"/>
+
+                    <TextBlock x:Name="ExitHotkeyLabel"
+                               Grid.Row="2"
+                               VerticalAlignment="Center"
+                               Text="Exit app"/>
+                    <TextBox x:Name="ExitHotkeyTextBox"
+                             Grid.Row="2"
+                             Grid.Column="1"
+                             Style="{StaticResource HotkeyTextBox}"/>
+                </Grid>
+
+                <Separator Margin="0,10,0,12"
+                           Background="#2B3A52"/>
+
+                <TextBlock x:Name="OverlayFieldsTitleText"
+                           Style="{StaticResource SectionTitle}"
+                           Text="Overlay fields"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="72"/>
+                        <ColumnDefinition Width="72"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="FieldColorHeaderText"
+                               Grid.Column="1"
+                               Margin="0,0,0,4"
+                               HorizontalAlignment="Center"
+                               Foreground="#8EA0BA"
+                               FontSize="12"
+                               Text="Label"/>
+                    <TextBlock x:Name="ValueColorHeaderText"
+                               Grid.Column="2"
+                               Margin="0,0,0,4"
+                               HorizontalAlignment="Center"
+                               Foreground="#8EA0BA"
+                               FontSize="12"
+                               Text="Value"/>
+
+                    <CheckBox x:Name="ShowTargetCheckBox"
+                              Grid.Row="1"
+                              Content="Target process"/>
+                    <CheckBox x:Name="ShowStatusCheckBox"
+                              Grid.Row="2"
+                              Content="Status"/>
+
+                    <CheckBox x:Name="ShowFpsCheckBox"
+                              Grid.Row="3"
+                              Content="FPS"/>
+                    <Button x:Name="FpsLabelColorButton"
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Tag="Fps|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="FpsValueColorButton"
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            Tag="Fps|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+
+                    <CheckBox x:Name="ShowAverageFpsCheckBox"
+                              Grid.Row="4"
+                              Content="Average FPS"/>
+                    <Button x:Name="AverageFpsLabelColorButton"
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Tag="AverageFps|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="AverageFpsValueColorButton"
+                            Grid.Row="4"
+                            Grid.Column="2"
+                            Tag="AverageFps|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+
+                    <CheckBox x:Name="ShowOnePercentLowCheckBox"
+                              Grid.Row="5"
+                              Content="1% low FPS"/>
+                    <Button x:Name="OnePercentLowLabelColorButton"
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            Tag="OnePercentLow|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="OnePercentLowValueColorButton"
+                            Grid.Row="5"
+                            Grid.Column="2"
+                            Tag="OnePercentLow|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+
+                    <CheckBox x:Name="ShowCpuCheckBox"
+                              Grid.Row="6"
+                              Content="CPU"/>
+                    <Button x:Name="CpuLabelColorButton"
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Tag="Cpu|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="CpuValueColorButton"
+                            Grid.Row="6"
+                            Grid.Column="2"
+                            Tag="Cpu|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+
+                    <CheckBox x:Name="ShowGpuCheckBox"
+                              Grid.Row="7"
+                              Content="GPU"/>
+                    <Button x:Name="GpuLabelColorButton"
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            Tag="Gpu|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="GpuValueColorButton"
+                            Grid.Row="7"
+                            Grid.Column="2"
+                            Tag="Gpu|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+
+                    <CheckBox x:Name="ShowVramCheckBox"
+                              Grid.Row="8"
+                              Content="VRAM"/>
+                    <Button x:Name="VramLabelColorButton"
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            Tag="Vram|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="VramValueColorButton"
+                            Grid.Row="8"
+                            Grid.Column="2"
+                            Tag="Vram|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+
+                    <CheckBox x:Name="ShowMemoryCheckBox"
+                              Grid.Row="9"
+                              Content="RAM"/>
+                    <Button x:Name="MemoryLabelColorButton"
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            Tag="Memory|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="MemoryValueColorButton"
+                            Grid.Row="9"
+                            Grid.Column="2"
+                            Tag="Memory|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="72"/>
+                        <ColumnDefinition Width="72"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="ShowFrameTimeCheckBox"
+                              Content="Frame time"/>
+                    <Button x:Name="FrameTimeLabelColorButton"
+                            Grid.Column="1"
+                            Tag="FrameTime|Label"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                    <Button x:Name="FrameTimeValueColorButton"
+                            Grid.Column="2"
+                            Tag="FrameTime|Value"
+                            Width="28"
+                            Height="24"
+                            MinWidth="0"
+                            Padding="0"
+                            Click="OnFieldColorClick"/>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="StatusText"
+                       VerticalAlignment="Center"
+                       Foreground="#8EA0BA"
+                       FontSize="12"
+                       TextTrimming="CharacterEllipsis"/>
+            <Button Grid.Column="1"
+                    x:Name="CloseButton"
+                    Content="Close"
+                    Click="OnCloseClick"/>
+        </Grid>
+    </Grid>
+</Window>

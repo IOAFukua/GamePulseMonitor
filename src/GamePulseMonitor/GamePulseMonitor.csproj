@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>GamePulseMonitor</AssemblyName>
+    <RootNamespace>GamePulseMonitor</RootNamespace>
+    <ApplicationIcon>Assets\GamePulseMonitor.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>zh-Hans;en</SatelliteResourceLanguages>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\GamePulseMonitor.ico" />
+    <None Remove="Assets\GamePulseMonitor.png" />
+    <Resource Include="Assets\GamePulseMonitor.ico" />
+    <Resource Include="Assets\GamePulseMonitor.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\tools\presentmon1\PresentMon.exe"
+          Link="tools\presentmon\PresentMon.exe"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="Always" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,218 @@
+<Window x:Class="GamePulseMonitor.HistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="History"
+        Icon="Assets/GamePulseMonitor.ico"
+        Width="980"
+        Height="640"
+        MinWidth="760"
+        MinHeight="520"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#101827">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#E8EEF8"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#E8EEF8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,14,8"/>
+            <EventSetter Event="Checked" Handler="OnMetricSelectionChanged"/>
+            <EventSetter Event="Unchecked" Handler="OnMetricSelectionChanged"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="MinWidth" Value="78"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+        </Style>
+        <Style x:Key="FilterLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8EA0BA"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel>
+            <StackPanel>
+                <TextBlock x:Name="TitleText"
+                           Text="History"
+                           FontSize="22"
+                           FontWeight="SemiBold"/>
+                <TextBlock x:Name="SubtitleText"
+                           Margin="0,3,0,0"
+                           Foreground="#8EA0BA"
+                           FontSize="12"
+                           Text="Metrics curves"/>
+            </StackPanel>
+            <Button x:Name="RefreshButton"
+                    DockPanel.Dock="Right"
+                    HorizontalAlignment="Right"
+                    Content="Refresh"
+                    Click="OnRefreshClick"/>
+        </DockPanel>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="96"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="118"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="184"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="76"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="76"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="ModeLabel"
+                       Style="{StaticResource FilterLabel}"
+                       Text="Mode"/>
+            <ComboBox x:Name="ModeComboBox"
+                      Grid.Column="1"
+                      Height="30"
+                      SelectionChanged="OnModeChanged">
+                <ComboBoxItem x:Name="RealtimeModeItem" Tag="Realtime" Content="Realtime"/>
+                <ComboBoxItem x:Name="HistoryModeItem" Tag="History" Content="History"/>
+            </ComboBox>
+
+            <TextBlock x:Name="DateLabel"
+                       Grid.Column="3"
+                       Style="{StaticResource FilterLabel}"
+                       Text="Date"/>
+            <ComboBox x:Name="DateComboBox"
+                      Grid.Column="4"
+                      Height="30"
+                      SelectionChanged="OnDateChanged"/>
+
+            <TextBlock x:Name="ProcessLabel"
+                       Grid.Column="6"
+                       Style="{StaticResource FilterLabel}"
+                       Text="Process"/>
+            <ComboBox x:Name="ProcessComboBox"
+                      Grid.Column="7"
+                      Height="30"
+                      SelectionChanged="OnProcessChanged"/>
+
+            <TextBlock x:Name="FromLabel"
+                       Grid.Column="9"
+                       Style="{StaticResource FilterLabel}"
+                       Text="From"/>
+            <TextBox x:Name="FromTextBox"
+                     Grid.Column="10"
+                     Height="30"
+                     VerticalContentAlignment="Center"/>
+
+            <TextBlock x:Name="ToLabel"
+                       Grid.Column="12"
+                       Style="{StaticResource FilterLabel}"
+                       Text="To"/>
+            <TextBox x:Name="ToTextBox"
+                     Grid.Column="13"
+                     Height="30"
+                     VerticalContentAlignment="Center"/>
+
+            <StackPanel Grid.Column="15"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button x:Name="LatestTwoHoursButton"
+                        Content="Last 2h"
+                        Click="OnLatestTwoHoursClick"/>
+                <Button x:Name="ApplyButton"
+                        Content="Apply"
+                        Click="OnApplyClick"/>
+            </StackPanel>
+        </Grid>
+
+        <WrapPanel Grid.Row="4"
+                   VerticalAlignment="Top"
+                   Margin="0,0,0,8">
+            <CheckBox x:Name="FpsCheckBox" Content="FPS" IsChecked="True"/>
+            <CheckBox x:Name="AverageFpsCheckBox" Content="AVG" IsChecked="True"/>
+            <CheckBox x:Name="LowFpsCheckBox" Content="1% LOW" IsChecked="True"/>
+            <CheckBox x:Name="CpuCheckBox" Content="CPU" IsChecked="True"/>
+            <CheckBox x:Name="GpuCheckBox" Content="GPU" IsChecked="True"/>
+            <CheckBox x:Name="VramCheckBox" Content="VRAM" IsChecked="True"/>
+            <CheckBox x:Name="MemoryCheckBox" Content="RAM" IsChecked="True"/>
+            <CheckBox x:Name="FrameTimeCheckBox" Content="FT" IsChecked="True"/>
+        </WrapPanel>
+
+        <Border Grid.Row="4"
+                Margin="0,34,0,0"
+                Background="#0B111D"
+                BorderBrush="#26344A"
+                BorderThickness="1"
+                CornerRadius="6"
+                PreviewMouseWheel="OnChartPreviewMouseWheel">
+            <Grid>
+                <Canvas x:Name="ChartCanvas"
+                        Background="Transparent"
+                        ClipToBounds="True"
+                        MouseLeave="OnChartMouseLeave"
+                        MouseMove="OnChartMouseMove"
+                        SizeChanged="OnChartSizeChanged"/>
+                <Ellipse x:Name="HoverMarker"
+                         Width="8"
+                         Height="8"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top"
+                         Stroke="#FFFFFF"
+                         StrokeThickness="1.5"
+                         Fill="#101827"
+                         IsHitTestVisible="False"
+                         Visibility="Collapsed"/>
+                <Border x:Name="HoverTip"
+                        Padding="8,6"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="#E6101827"
+                        BorderBrush="#667D9AB8"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        IsHitTestVisible="False"
+                        Visibility="Collapsed">
+                    <TextBlock x:Name="HoverTipText"
+                               FontSize="12"
+                               Foreground="#F5F7FB"/>
+                </Border>
+                <TextBlock x:Name="EmptyText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="#8EA0BA"
+                           Text="No data"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <WrapPanel x:Name="LegendPanel"/>
+            <TextBlock x:Name="StatusText"
+                       Grid.Column="1"
+                       VerticalAlignment="Center"
+                       Foreground="#8EA0BA"
+                       FontSize="12"/>
+        </Grid>
+    </Grid>
+</Window>
