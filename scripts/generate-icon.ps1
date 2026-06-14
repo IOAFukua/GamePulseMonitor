@@ -13,6 +13,207 @@ New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 
 Add-Type -AssemblyName System.Drawing
 
+function Set-IconGraphicsQuality {
+    param(
+        [System.Drawing.Graphics]$Graphics
+    )
+
+    $Graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+    $Graphics.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+    $Graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+}
+
+function New-PolygonPath {
+    param(
+        [System.Drawing.PointF[]]$Points
+    )
+
+    $path = [System.Drawing.Drawing2D.GraphicsPath]::new()
+    $path.AddPolygon($Points)
+    return $path
+}
+
+function New-SolidBrush {
+    param(
+        [int]$Alpha,
+        [int]$Red,
+        [int]$Green,
+        [int]$Blue
+    )
+
+    return [System.Drawing.SolidBrush]::new([System.Drawing.Color]::FromArgb($Alpha, $Red, $Green, $Blue))
+}
+
+function Stroke-Path {
+    param(
+        [System.Drawing.Graphics]$Graphics,
+        [System.Drawing.Drawing2D.GraphicsPath]$Path,
+        [int]$Alpha,
+        [int]$Red,
+        [int]$Green,
+        [int]$Blue,
+        [single]$Width
+    )
+
+    $pen = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb($Alpha, $Red, $Green, $Blue), $Width)
+    try {
+        $pen.LineJoin = [System.Drawing.Drawing2D.LineJoin]::Round
+        $pen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
+        $pen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
+        $Graphics.DrawPath($pen, $Path)
+    }
+    finally {
+        $pen.Dispose()
+    }
+}
+
+function Draw-ThreeDimensionalCore {
+    param(
+        [System.Drawing.Graphics]$Graphics,
+        [single]$X,
+        [single]$Y,
+        [single]$Size
+    )
+
+    $scale = $Size / 256.0
+    Set-IconGraphicsQuality -Graphics $Graphics
+
+    $shadow = [System.Drawing.Drawing2D.GraphicsPath]::new()
+    $shadow.AddEllipse($X + (42 * $scale), $Y + (202 * $scale), 172 * $scale, 26 * $scale)
+    $shadowBrush = [System.Drawing.Drawing2D.PathGradientBrush]::new($shadow)
+    try {
+        $shadowBrush.CenterColor = [System.Drawing.Color]::FromArgb(58, 30, 80, 120)
+        $shadowBrush.SurroundColors = @([System.Drawing.Color]::FromArgb(0, 30, 80, 120))
+        $Graphics.FillPath($shadowBrush, $shadow)
+    }
+    finally {
+        $shadowBrush.Dispose()
+        $shadow.Dispose()
+    }
+
+    $top = New-PolygonPath -Points @(
+        [System.Drawing.PointF]::new($X + (80 * $scale), $Y + (36 * $scale)),
+        [System.Drawing.PointF]::new($X + (178 * $scale), $Y + (54 * $scale)),
+        [System.Drawing.PointF]::new($X + (222 * $scale), $Y + (118 * $scale)),
+        [System.Drawing.PointF]::new($X + (134 * $scale), $Y + (170 * $scale)),
+        [System.Drawing.PointF]::new($X + (39 * $scale), $Y + (132 * $scale))
+    )
+    $left = New-PolygonPath -Points @(
+        [System.Drawing.PointF]::new($X + (39 * $scale), $Y + (132 * $scale)),
+        [System.Drawing.PointF]::new($X + (134 * $scale), $Y + (170 * $scale)),
+        [System.Drawing.PointF]::new($X + (134 * $scale), $Y + (213 * $scale)),
+        [System.Drawing.PointF]::new($X + (52 * $scale), $Y + (176 * $scale))
+    )
+    $right = New-PolygonPath -Points @(
+        [System.Drawing.PointF]::new($X + (134 * $scale), $Y + (170 * $scale)),
+        [System.Drawing.PointF]::new($X + (222 * $scale), $Y + (118 * $scale)),
+        [System.Drawing.PointF]::new($X + (204 * $scale), $Y + (160 * $scale)),
+        [System.Drawing.PointF]::new($X + (134 * $scale), $Y + (213 * $scale))
+    )
+    $front = New-PolygonPath -Points @(
+        [System.Drawing.PointF]::new($X + (52 * $scale), $Y + (176 * $scale)),
+        [System.Drawing.PointF]::new($X + (134 * $scale), $Y + (213 * $scale)),
+        [System.Drawing.PointF]::new($X + (204 * $scale), $Y + (160 * $scale)),
+        [System.Drawing.PointF]::new($X + (222 * $scale), $Y + (118 * $scale)),
+        [System.Drawing.PointF]::new($X + (134 * $scale), $Y + (170 * $scale)),
+        [System.Drawing.PointF]::new($X + (39 * $scale), $Y + (132 * $scale))
+    )
+
+    $leftBrush = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+        [System.Drawing.RectangleF]::new($X + (38 * $scale), $Y + (130 * $scale), 100 * $scale, 86 * $scale),
+        [System.Drawing.Color]::FromArgb(255, 31, 172, 222),
+        [System.Drawing.Color]::FromArgb(255, 0, 103, 184),
+        [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
+    $rightBrush = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+        [System.Drawing.RectangleF]::new($X + (132 * $scale), $Y + (116 * $scale), 96 * $scale, 100 * $scale),
+        [System.Drawing.Color]::FromArgb(255, 27, 205, 176),
+        [System.Drawing.Color]::FromArgb(255, 0, 132, 193),
+        [System.Drawing.Drawing2D.LinearGradientMode]::Vertical)
+    $topBrush = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+        [System.Drawing.RectangleF]::new($X + (36 * $scale), $Y + (34 * $scale), 190 * $scale, 140 * $scale),
+        [System.Drawing.Color]::FromArgb(255, 239, 254, 255),
+        [System.Drawing.Color]::FromArgb(255, 110, 218, 248),
+        [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
+
+    try {
+        $Graphics.FillPath($leftBrush, $left)
+        $Graphics.FillPath($rightBrush, $right)
+        $Graphics.FillPath($topBrush, $top)
+
+        Stroke-Path -Graphics $Graphics -Path $front -Alpha 235 -Red 255 -Green 255 -Blue 255 -Width ([single](12 * $scale))
+        Stroke-Path -Graphics $Graphics -Path $front -Alpha 255 -Red 37 -Green 164 -Blue 218 -Width ([single](4 * $scale))
+        Stroke-Path -Graphics $Graphics -Path $top -Alpha 170 -Red 255 -Green 255 -Blue 255 -Width ([single](3 * $scale))
+
+        $core = New-PolygonPath -Points @(
+            [System.Drawing.PointF]::new($X + (104 * $scale), $Y + (76 * $scale)),
+            [System.Drawing.PointF]::new($X + (165 * $scale), $Y + (88 * $scale)),
+            [System.Drawing.PointF]::new($X + (190 * $scale), $Y + (121 * $scale)),
+            [System.Drawing.PointF]::new($X + (132 * $scale), $Y + (148 * $scale)),
+            [System.Drawing.PointF]::new($X + (76 * $scale), $Y + (123 * $scale))
+        )
+        $coreBrush = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
+            [System.Drawing.RectangleF]::new($X + (72 * $scale), $Y + (72 * $scale), 122 * $scale, 80 * $scale),
+            [System.Drawing.Color]::FromArgb(215, 255, 255, 255),
+            [System.Drawing.Color]::FromArgb(120, 192, 246, 255),
+            [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
+        try {
+            $Graphics.FillPath($coreBrush, $core)
+            Stroke-Path -Graphics $Graphics -Path $core -Alpha 130 -Red 255 -Green 255 -Blue 255 -Width ([single](3 * $scale))
+        }
+        finally {
+            $coreBrush.Dispose()
+            $core.Dispose()
+        }
+
+        $accentTop = New-PolygonPath -Points @(
+            [System.Drawing.PointF]::new($X + (161 * $scale), $Y + (55 * $scale)),
+            [System.Drawing.PointF]::new($X + (211 * $scale), $Y + (72 * $scale)),
+            [System.Drawing.PointF]::new($X + (194 * $scale), $Y + (100 * $scale)),
+            [System.Drawing.PointF]::new($X + (151 * $scale), $Y + (83 * $scale))
+        )
+        $accentSide = New-PolygonPath -Points @(
+            [System.Drawing.PointF]::new($X + (194 * $scale), $Y + (100 * $scale)),
+            [System.Drawing.PointF]::new($X + (211 * $scale), $Y + (72 * $scale)),
+            [System.Drawing.PointF]::new($X + (216 * $scale), $Y + (94 * $scale)),
+            [System.Drawing.PointF]::new($X + (198 * $scale), $Y + (122 * $scale))
+        )
+        $accentTopBrush = New-SolidBrush -Alpha 255 -Red 45 -Green 216 -Blue 151
+        $accentSideBrush = New-SolidBrush -Alpha 255 -Red 15 -Green 154 -Blue 126
+        try {
+            $Graphics.FillPath($accentSideBrush, $accentSide)
+            $Graphics.FillPath($accentTopBrush, $accentTop)
+            Stroke-Path -Graphics $Graphics -Path $accentTop -Alpha 230 -Red 255 -Green 255 -Blue 255 -Width ([single](5 * $scale))
+            Stroke-Path -Graphics $Graphics -Path $accentSide -Alpha 160 -Red 255 -Green 255 -Blue 255 -Width ([single](3 * $scale))
+        }
+        finally {
+            $accentTopBrush.Dispose()
+            $accentSideBrush.Dispose()
+            $accentTop.Dispose()
+            $accentSide.Dispose()
+        }
+
+        $shinePen = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(130, 255, 255, 255), [single](4 * $scale))
+        try {
+            $shinePen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
+            $shinePen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
+            $Graphics.DrawLine($shinePen, $X + (84 * $scale), $Y + (53 * $scale), $X + (137 * $scale), $Y + (63 * $scale))
+            $Graphics.DrawLine($shinePen, $X + (62 * $scale), $Y + (128 * $scale), $X + (111 * $scale), $Y + (148 * $scale))
+        }
+        finally {
+            $shinePen.Dispose()
+        }
+    }
+    finally {
+        $leftBrush.Dispose()
+        $rightBrush.Dispose()
+        $topBrush.Dispose()
+        $front.Dispose()
+        $right.Dispose()
+        $left.Dispose()
+        $top.Dispose()
+    }
+}
+
 function New-IconBitmap {
     param(
         [int]$Size
@@ -20,89 +221,14 @@ function New-IconBitmap {
 
     $bitmap = [System.Drawing.Bitmap]::new($Size, $Size, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
-    $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-    $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::ClearTypeGridFit
-
-    $scale = $Size / 256.0
-    $corner = [Math]::Round(44 * $scale)
-    $bounds = [System.Drawing.RectangleF]::new([single](8 * $scale), [single](8 * $scale), [single](240 * $scale), [single](240 * $scale))
-
-    $path = [System.Drawing.Drawing2D.GraphicsPath]::new()
-    $diameter = 2 * $corner
-    $path.AddArc($bounds.X, $bounds.Y, $diameter, $diameter, 180, 90)
-    $path.AddArc($bounds.Right - $diameter, $bounds.Y, $diameter, $diameter, 270, 90)
-    $path.AddArc($bounds.Right - $diameter, $bounds.Bottom - $diameter, $diameter, $diameter, 0, 90)
-    $path.AddArc($bounds.X, $bounds.Bottom - $diameter, $diameter, $diameter, 90, 90)
-    $path.CloseFigure()
-
-    $background = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
-        $bounds,
-        [System.Drawing.Color]::FromArgb(255, 9, 18, 32),
-        [System.Drawing.Color]::FromArgb(255, 16, 33, 50),
-        [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
-    $graphics.FillPath($background, $path)
-    $borderPen = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(255, 69, 95, 128), [single](4 * $scale))
-    $graphics.DrawPath($borderPen, $path)
-
-    $monitorRect = [System.Drawing.RectangleF]::new([single](48 * $scale), [single](50 * $scale), [single](160 * $scale), [single](110 * $scale))
-    $monitorPath = [System.Drawing.Drawing2D.GraphicsPath]::new()
-    $monitorRadius = 18 * $scale
-    $monitorDiameter = 2 * $monitorRadius
-    $monitorPath.AddArc($monitorRect.X, $monitorRect.Y, $monitorDiameter, $monitorDiameter, 180, 90)
-    $monitorPath.AddArc($monitorRect.Right - $monitorDiameter, $monitorRect.Y, $monitorDiameter, $monitorDiameter, 270, 90)
-    $monitorPath.AddArc($monitorRect.Right - $monitorDiameter, $monitorRect.Bottom - $monitorDiameter, $monitorDiameter, $monitorDiameter, 0, 90)
-    $monitorPath.AddArc($monitorRect.X, $monitorRect.Bottom - $monitorDiameter, $monitorDiameter, $monitorDiameter, 90, 90)
-    $monitorPath.CloseFigure()
-
-    $screenBrush = [System.Drawing.SolidBrush]::new([System.Drawing.Color]::FromArgb(255, 12, 25, 39))
-    $accentPen = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(255, 47, 226, 166), [single](10 * $scale))
-    $accentPen.LineJoin = [System.Drawing.Drawing2D.LineJoin]::Round
-    $accentPen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
-    $accentPen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
-
-    $graphics.FillPath($screenBrush, $monitorPath)
-    $monitorPen = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(255, 95, 205, 255), [single](7 * $scale))
-    $graphics.DrawPath($monitorPen, $monitorPath)
-
-    $pulsePoints = @(
-        [System.Drawing.PointF]::new([single](64 * $scale), [single](118 * $scale)),
-        [System.Drawing.PointF]::new([single](92 * $scale), [single](118 * $scale)),
-        [System.Drawing.PointF]::new([single](108 * $scale), [single](88 * $scale)),
-        [System.Drawing.PointF]::new([single](126 * $scale), [single](139 * $scale)),
-        [System.Drawing.PointF]::new([single](146 * $scale), [single](105 * $scale)),
-        [System.Drawing.PointF]::new([single](190 * $scale), [single](105 * $scale))
-    )
-    $graphics.DrawLines($accentPen, $pulsePoints)
-
-    $standPen = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(255, 95, 205, 255), [single](7 * $scale))
-    $standPen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
-    $standPen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
-    $graphics.DrawLine($standPen, 128 * $scale, 160 * $scale, 128 * $scale, 181 * $scale)
-    $graphics.DrawLine($standPen, 92 * $scale, 185 * $scale, 164 * $scale, 185 * $scale)
-
-    if ($Size -ge 48) {
-        $fontSize = [Math]::Max(15, [Math]::Round(38 * $scale))
-        $font = [System.Drawing.Font]::new('Segoe UI', [single]$fontSize, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
-        $textBrush = [System.Drawing.SolidBrush]::new([System.Drawing.Color]::FromArgb(255, 246, 249, 255))
-        $format = [System.Drawing.StringFormat]::new()
-        $format.Alignment = [System.Drawing.StringAlignment]::Center
-        $format.LineAlignment = [System.Drawing.StringAlignment]::Center
-        $textRect = [System.Drawing.RectangleF]::new([single](48 * $scale), [single](189 * $scale), [single](160 * $scale), [single](44 * $scale))
-        $graphics.DrawString('FPS', $font, $textBrush, $textRect, $format)
-        $font.Dispose()
-        $textBrush.Dispose()
-        $format.Dispose()
+    try {
+        Set-IconGraphicsQuality -Graphics $graphics
+        $graphics.Clear([System.Drawing.Color]::Transparent)
+        Draw-ThreeDimensionalCore -Graphics $graphics -X 0 -Y 0 -Size $Size
     }
-
-    $standPen.Dispose()
-    $accentPen.Dispose()
-    $monitorPen.Dispose()
-    $screenBrush.Dispose()
-    $borderPen.Dispose()
-    $background.Dispose()
-    $path.Dispose()
-    $monitorPath.Dispose()
-    $graphics.Dispose()
+    finally {
+        $graphics.Dispose()
+    }
 
     return $bitmap
 }

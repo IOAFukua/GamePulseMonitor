@@ -158,10 +158,10 @@
 
         <Border Grid.Row="4"
                 Margin="0,34,0,0"
-                Background="#0B111D"
-                BorderBrush="#26344A"
-                BorderThickness="1"
-                CornerRadius="6"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                CornerRadius="0"
                 PreviewMouseWheel="OnChartPreviewMouseWheel">
             <Grid>
                 <Canvas x:Name="ChartCanvas"
