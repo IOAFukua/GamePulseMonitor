@@ -18,7 +18,7 @@ It samples once per second and records:
 
 Installers are available on the GitHub Release page:
 
-[GamePulseMonitor v0.1.0](https://github.com/IOAFukua/GamePulseMonitor/releases/tag/v0.1.0)
+[Latest release](https://github.com/IOAFukua/GamePulseMonitor/releases/latest)
 
 Recommended packages:
 
