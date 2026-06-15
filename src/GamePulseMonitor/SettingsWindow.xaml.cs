@@ -66,6 +66,7 @@ public partial class SettingsWindow : Window
             ToggleOverlayHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ToggleOverlay);
             BenchmarkHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ToggleBenchmark);
             ExitHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.Exit);
+            ScreenshotHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.Screenshot);
         }
         finally
         {
@@ -99,6 +100,7 @@ public partial class SettingsWindow : Window
         ToggleOverlayHotkeyLabel.Text = TextCatalog.Get(language, "ToggleOverlayHotkey");
         BenchmarkHotkeyLabel.Text = TextCatalog.Get(language, "BenchmarkHotkey");
         ExitHotkeyLabel.Text = TextCatalog.Get(language, "ExitHotkey");
+        ScreenshotHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotHotkey");
         OverlayFieldsTitleText.Text = TextCatalog.Get(language, "OverlayFields");
         FieldColorHeaderText.Text = TextCatalog.Get(language, "FieldColor");
         ValueColorHeaderText.Text = TextCatalog.Get(language, "ValueColor");
@@ -346,6 +348,9 @@ public partial class SettingsWindow : Window
                 case HotkeyTarget.Exit:
                     settings.Hotkeys.Exit = hotkey;
                     break;
+                case HotkeyTarget.Screenshot:
+                    settings.Hotkeys.Screenshot = hotkey;
+                    break;
             }
         });
         SetStatus($"{TextCatalog.Get(_store.Current.Language, "HotkeySaved")}: {HotkeyFormatter.Format(hotkey)}");
@@ -467,6 +472,11 @@ public partial class SettingsWindow : Window
             return HotkeyTarget.Exit;
         }
 
+        if (ReferenceEquals(textBox, ScreenshotHotkeyTextBox))
+        {
+            return HotkeyTarget.Screenshot;
+        }
+
         return null;
     }
 
@@ -475,13 +485,15 @@ public partial class SettingsWindow : Window
         var current = _store.Current.Hotkeys;
         return target != HotkeyTarget.ToggleOverlay && hotkey.Equals(current.ToggleOverlay) ||
                target != HotkeyTarget.ToggleBenchmark && hotkey.Equals(current.ToggleBenchmark) ||
-               target != HotkeyTarget.Exit && hotkey.Equals(current.Exit);
+               target != HotkeyTarget.Exit && hotkey.Equals(current.Exit) ||
+               target != HotkeyTarget.Screenshot && hotkey.Equals(current.Screenshot);
     }
 
     private enum HotkeyTarget
     {
         ToggleOverlay,
         ToggleBenchmark,
-        Exit
+        Exit,
+        Screenshot
     }
 }

@@ -7,31 +7,36 @@ internal sealed class TrayController : IDisposable
     private readonly Action _toggleOverlay;
     private readonly Action _openSettings;
     private readonly Action _openHistory;
+    private readonly Action _startScreenshot;
     private readonly Action _exit;
     private readonly System.Windows.Forms.NotifyIcon _notifyIcon = new();
     private readonly System.Windows.Forms.ContextMenuStrip _menu = new();
     private readonly System.Windows.Forms.ToolStripMenuItem _toggleOverlayItem = new("Show / hide overlay");
     private readonly System.Windows.Forms.ToolStripMenuItem _settingsItem = new("Settings");
     private readonly System.Windows.Forms.ToolStripMenuItem _historyItem = new("History");
+    private readonly System.Windows.Forms.ToolStripMenuItem _screenshotItem = new("Screenshot");
     private readonly System.Windows.Forms.ToolStripMenuItem _exitItem = new("Exit");
     private System.Drawing.Icon? _icon;
     private bool _added;
 
-    public TrayController(Action toggleOverlay, Action openSettings, Action openHistory, Action exit)
+    public TrayController(Action toggleOverlay, Action openSettings, Action openHistory, Action startScreenshot, Action exit)
     {
         _toggleOverlay = toggleOverlay;
         _openSettings = openSettings;
         _openHistory = openHistory;
+        _startScreenshot = startScreenshot;
         _exit = exit;
 
         _toggleOverlayItem.Click += (_, _) => _toggleOverlay();
         _settingsItem.Click += (_, _) => _openSettings();
         _historyItem.Click += (_, _) => _openHistory();
+        _screenshotItem.Click += (_, _) => _startScreenshot();
         _exitItem.Click += (_, _) => _exit();
 
         _menu.Items.Add(_toggleOverlayItem);
         _menu.Items.Add(_settingsItem);
         _menu.Items.Add(_historyItem);
+        _menu.Items.Add(_screenshotItem);
         _menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
         _menu.Items.Add(_exitItem);
 
@@ -66,11 +71,12 @@ internal sealed class TrayController : IDisposable
         return false;
     }
 
-    public void ApplyText(string showHideOverlay, string settings, string history, string exit)
+    public void ApplyText(string showHideOverlay, string settings, string history, string screenshot, string exit)
     {
         _toggleOverlayItem.Text = showHideOverlay;
         _settingsItem.Text = settings;
         _historyItem.Text = history;
+        _screenshotItem.Text = screenshot;
         _exitItem.Text = exit;
     }
 

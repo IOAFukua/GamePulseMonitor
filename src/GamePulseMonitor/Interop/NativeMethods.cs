@@ -8,10 +8,12 @@ internal static class NativeMethods
     public const int HotkeyToggleOverlay = 1001;
     public const int HotkeyExit = 1002;
     public const int HotkeyToggleBenchmark = 1003;
+    public const int HotkeyScreenshot = 1004;
     public const uint ModAlt = 0x0001;
     public const uint ModShift = 0x0004;
     public const uint ModControl = 0x0002;
     public const uint VirtualKeyA = 0x41;
+    public const uint VirtualKeyS = 0x53;
     public const uint VirtualKeyF11 = 0x7A;
     public const uint VirtualKeyF12 = 0x7B;
     public const int VirtualKeyMenu = 0x12;

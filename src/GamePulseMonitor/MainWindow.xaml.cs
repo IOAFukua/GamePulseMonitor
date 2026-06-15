@@ -40,6 +40,7 @@ public partial class MainWindow : Window
     private bool _isDragging;
     private bool _benchmarkChordWasPressed;
     private bool _suspendHotkeys;
+    private bool _isScreenshotActive;
     private int _backgroundOpacityPercent;
     private double _activeDesignWidth = VerticalDesignWidth;
     private double _activeDesignHeight = 270;
@@ -59,7 +60,7 @@ public partial class MainWindow : Window
 
         _metricsService.SnapshotReady += OnSnapshotReady;
         _settingsStore.SettingsChanged += OnSettingsChanged;
-        _trayController = new TrayController(ToggleVisibility, OpenSettings, OpenHistory, Close);
+        _trayController = new TrayController(ToggleVisibility, OpenSettings, OpenHistory, StartScreenshotSelection, Close);
         _altDragTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(40)
@@ -240,6 +241,7 @@ public partial class MainWindow : Window
             TextCatalog.Get(language, "ShowHideOverlay"),
             TextCatalog.Get(language, "SettingsMenu"),
             TextCatalog.Get(language, "HistoryMenu"),
+            TextCatalog.Get(language, "ScreenshotMenu"),
             TextCatalog.Get(language, "Exit"));
         MinimizeButton.ToolTip = TextCatalog.Get(language, "MinimizeToTray");
 
@@ -719,6 +721,7 @@ public partial class MainWindow : Window
         RegisterHotkey(NativeMethods.HotkeyToggleOverlay, _settings.Hotkeys.ToggleOverlay, TextCatalog.Get(_settings.Language, "ToggleOverlayHotkey"), failed);
         RegisterHotkey(NativeMethods.HotkeyExit, _settings.Hotkeys.Exit, TextCatalog.Get(_settings.Language, "ExitHotkey"), failed);
         RegisterHotkey(NativeMethods.HotkeyToggleBenchmark, _settings.Hotkeys.ToggleBenchmark, TextCatalog.Get(_settings.Language, "BenchmarkHotkey"), failed);
+        RegisterHotkey(NativeMethods.HotkeyScreenshot, _settings.Hotkeys.Screenshot, TextCatalog.Get(_settings.Language, "ScreenshotHotkey"), failed);
 
         if (failed.Count > 0)
         {
@@ -740,6 +743,7 @@ public partial class MainWindow : Window
         NativeMethods.UnregisterHotKey(hwnd, NativeMethods.HotkeyToggleOverlay);
         NativeMethods.UnregisterHotKey(hwnd, NativeMethods.HotkeyExit);
         NativeMethods.UnregisterHotKey(hwnd, NativeMethods.HotkeyToggleBenchmark);
+        NativeMethods.UnregisterHotKey(hwnd, NativeMethods.HotkeyScreenshot);
     }
 
     private nint WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
@@ -767,6 +771,11 @@ public partial class MainWindow : Window
             {
                 _benchmarkChordWasPressed = true;
                 ToggleBenchmarkFromInput();
+                handled = true;
+            }
+            else if (id == NativeMethods.HotkeyScreenshot)
+            {
+                StartScreenshotSelection();
                 handled = true;
             }
         }
@@ -848,6 +857,57 @@ public partial class MainWindow : Window
                     TextCatalog.Get(_settings.Language, "History"),
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+            }
+        });
+    }
+
+    private void StartScreenshotSelection()
+    {
+        Dispatcher.InvokeAsync(async () =>
+        {
+            if (_isScreenshotActive)
+            {
+                return;
+            }
+
+            _isScreenshotActive = true;
+            var restoreOverlay = _isOverlayVisible && Visibility == Visibility.Visible;
+            try
+            {
+                if (restoreOverlay)
+                {
+                    Visibility = Visibility.Hidden;
+                }
+
+                var window = new ScreenshotSelectionWindow(_settings.Language);
+                var result = await window.CaptureAsync();
+                if (result is null)
+                {
+                    StatusText.Text = TextCatalog.Get(_settings.Language, "ScreenshotCancelled");
+                    return;
+                }
+
+                StatusText.Text = string.Format(
+                    TextCatalog.Get(_settings.Language, "ScreenshotSaved"),
+                    result.FilePath);
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"{TextCatalog.Get(_settings.Language, "ScreenshotFailed")}: {ex.Message}";
+                System.Windows.MessageBox.Show(
+                    ex.Message,
+                    TextCatalog.Get(_settings.Language, "ScreenshotMenu"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (restoreOverlay)
+                {
+                    Visibility = Visibility.Visible;
+                }
+
+                _isScreenshotActive = false;
             }
         });
     }

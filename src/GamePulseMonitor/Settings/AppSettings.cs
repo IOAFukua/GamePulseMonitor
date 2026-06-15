@@ -249,6 +249,7 @@ internal sealed class HotkeySettings
     public HotkeySetting ToggleOverlay { get; set; } = new(HotkeyModifiers.Control | HotkeyModifiers.Shift, 0x7A);
     public HotkeySetting Exit { get; set; } = new(HotkeyModifiers.Control | HotkeyModifiers.Shift, 0x7B);
     public HotkeySetting ToggleBenchmark { get; set; } = new(HotkeyModifiers.Alt, 0x41);
+    public HotkeySetting Screenshot { get; set; } = new(HotkeyModifiers.Control | HotkeyModifiers.Shift, 0x53);
 
     public static HotkeySettings Default() => new();
 
@@ -258,7 +259,8 @@ internal sealed class HotkeySettings
         {
             ToggleOverlay = ToggleOverlay.Clone(),
             Exit = Exit.Clone(),
-            ToggleBenchmark = ToggleBenchmark.Clone()
+            ToggleBenchmark = ToggleBenchmark.Clone(),
+            Screenshot = Screenshot.Clone()
         };
     }
 }

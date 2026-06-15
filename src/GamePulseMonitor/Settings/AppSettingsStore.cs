@@ -65,6 +65,7 @@ internal sealed class AppSettingsStore
             settings.Hotkeys.ToggleOverlay ??= HotkeySettings.Default().ToggleOverlay;
             settings.Hotkeys.Exit ??= HotkeySettings.Default().Exit;
             settings.Hotkeys.ToggleBenchmark ??= HotkeySettings.Default().ToggleBenchmark;
+            settings.Hotkeys.Screenshot ??= HotkeySettings.Default().Screenshot;
             return settings;
         }
         catch
