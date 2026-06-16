@@ -193,6 +193,8 @@ internal sealed class OverlayFieldSettings
 
 internal static class OverlayFieldIds
 {
+    public const string Target = "Target";
+    public const string Status = "Status";
     public const string Fps = "Fps";
     public const string AverageFps = "AverageFps";
     public const string OnePercentLow = "OnePercentLow";
@@ -207,6 +209,8 @@ internal static class OverlayFieldDefaults
 {
     public static readonly string[] FieldIds =
     [
+        OverlayFieldIds.Target,
+        OverlayFieldIds.Status,
         OverlayFieldIds.Fps,
         OverlayFieldIds.AverageFps,
         OverlayFieldIds.OnePercentLow,
@@ -229,6 +233,8 @@ internal static class OverlayFieldDefaults
             HorizontalWidth = fieldId switch
             {
                 OverlayFieldIds.Fps => 72,
+                OverlayFieldIds.Target => 140,
+                OverlayFieldIds.Status => 120,
                 OverlayFieldIds.AverageFps => 92,
                 OverlayFieldIds.OnePercentLow => 90,
                 OverlayFieldIds.Cpu => 112,
@@ -250,6 +256,17 @@ internal sealed class HotkeySettings
     public HotkeySetting Exit { get; set; } = new(HotkeyModifiers.Control | HotkeyModifiers.Shift, 0x7B);
     public HotkeySetting ToggleBenchmark { get; set; } = new(HotkeyModifiers.Alt, 0x41);
     public HotkeySetting Screenshot { get; set; } = new(HotkeyModifiers.Control | HotkeyModifiers.Shift, 0x53);
+    public HotkeySetting ScreenshotPen { get; set; } = new(HotkeyModifiers.None, 0x53);
+    public HotkeySetting ScreenshotArrow { get; set; } = new(HotkeyModifiers.None, 0x41);
+    public HotkeySetting ScreenshotText { get; set; } = new(HotkeyModifiers.None, 0x54);
+    public HotkeySetting ScreenshotMosaic { get; set; } = new(HotkeyModifiers.None, 0x4D);
+    public HotkeySetting ScreenshotEraser { get; set; } = new(HotkeyModifiers.None, 0x45);
+    public HotkeySetting ScreenshotPin { get; set; } = new(HotkeyModifiers.Control, 0x54);
+    public HotkeySetting ScreenshotCopy { get; set; } = new(HotkeyModifiers.Control, 0x43);
+    public HotkeySetting ScreenshotSave { get; set; } = new(HotkeyModifiers.Control, 0x53);
+    public HotkeySetting ScreenshotUndo { get; set; } = new(HotkeyModifiers.Control, 0x5A);
+    public HotkeySetting ScreenshotRedo { get; set; } = new(HotkeyModifiers.Control, 0x59);
+    public HotkeySetting ScreenshotCopyRgb { get; set; } = new(HotkeyModifiers.None, 0x43);
 
     public static HotkeySettings Default() => new();
 
@@ -260,7 +277,18 @@ internal sealed class HotkeySettings
             ToggleOverlay = ToggleOverlay.Clone(),
             Exit = Exit.Clone(),
             ToggleBenchmark = ToggleBenchmark.Clone(),
-            Screenshot = Screenshot.Clone()
+            Screenshot = Screenshot.Clone(),
+            ScreenshotPen = ScreenshotPen.Clone(),
+            ScreenshotArrow = ScreenshotArrow.Clone(),
+            ScreenshotText = ScreenshotText.Clone(),
+            ScreenshotMosaic = ScreenshotMosaic.Clone(),
+            ScreenshotEraser = ScreenshotEraser.Clone(),
+            ScreenshotPin = ScreenshotPin.Clone(),
+            ScreenshotCopy = ScreenshotCopy.Clone(),
+            ScreenshotSave = ScreenshotSave.Clone(),
+            ScreenshotUndo = ScreenshotUndo.Clone(),
+            ScreenshotRedo = ScreenshotRedo.Clone(),
+            ScreenshotCopyRgb = ScreenshotCopyRgb.Clone()
         };
     }
 }

@@ -309,13 +309,15 @@ public partial class MainWindow : Window
         var color = ParseHexColor(display.FontColorHex);
         var valueBrush = new SolidColorBrush(color);
         var subtleBrush = new SolidColorBrush(WithAlpha(color, 0x86));
+        var targetSettings = display.GetFieldSettings(OverlayFieldIds.Target);
+        var statusSettings = display.GetFieldSettings(OverlayFieldIds.Status);
 
-        TargetText.Foreground = valueBrush;
-        LiveText.Foreground = valueBrush;
+        TargetText.Foreground = new SolidColorBrush(ParseHexColor(targetSettings.LabelColorHex));
+        LiveText.Foreground = new SolidColorBrush(ParseHexColor(targetSettings.ValueColorHex));
         MinimizeButton.Foreground = valueBrush;
         MinimizeButton.Background = System.Windows.Media.Brushes.Transparent;
         MinimizeButton.BorderBrush = System.Windows.Media.Brushes.Transparent;
-        StatusText.Foreground = subtleBrush;
+        StatusText.Foreground = new SolidColorBrush(ParseHexColor(statusSettings.ValueColorHex));
         FooterText.Foreground = subtleBrush;
 
         foreach (var metric in GetMetricRows())
@@ -879,7 +881,7 @@ public partial class MainWindow : Window
                     Visibility = Visibility.Hidden;
                 }
 
-                var window = new ScreenshotSelectionWindow(_settings.Language);
+                var window = new ScreenshotSelectionWindow(_settings.Language, _settings.Hotkeys);
                 var result = await window.CaptureAsync();
                 if (result is null)
                 {
@@ -887,9 +889,15 @@ public partial class MainWindow : Window
                     return;
                 }
 
-                StatusText.Text = string.Format(
-                    TextCatalog.Get(_settings.Language, "ScreenshotSaved"),
-                    result.FilePath);
+                StatusText.Text = result.Kind switch
+                {
+                    ScreenshotResultKind.Copied => TextCatalog.Get(_settings.Language, "ScreenshotCopied"),
+                    ScreenshotResultKind.Pinned => TextCatalog.Get(_settings.Language, "ScreenshotPinned"),
+                    ScreenshotResultKind.Saved => string.Format(
+                        TextCatalog.Get(_settings.Language, "ScreenshotSaved"),
+                        result.FilePath),
+                    _ => TextCatalog.Get(_settings.Language, "ScreenshotMenu")
+                };
             }
             catch (Exception ex)
             {

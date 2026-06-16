@@ -67,6 +67,17 @@ public partial class SettingsWindow : Window
             BenchmarkHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ToggleBenchmark);
             ExitHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.Exit);
             ScreenshotHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.Screenshot);
+            ScreenshotPenHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotPen);
+            ScreenshotArrowHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotArrow);
+            ScreenshotTextHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotText);
+            ScreenshotMosaicHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotMosaic);
+            ScreenshotEraserHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotEraser);
+            ScreenshotPinHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotPin);
+            ScreenshotCopyHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotCopy);
+            ScreenshotSaveHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotSave);
+            ScreenshotUndoHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotUndo);
+            ScreenshotRedoHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotRedo);
+            ScreenshotCopyRgbHotkeyTextBox.Text = HotkeyFormatter.Format(settings.Hotkeys.ScreenshotCopyRgb);
         }
         finally
         {
@@ -78,6 +89,8 @@ public partial class SettingsWindow : Window
     {
         Title = TextCatalog.Get(language, "Settings");
         TitleText.Text = TextCatalog.Get(language, "Settings");
+        MonitorTab.Header = TextCatalog.Get(language, "MonitorTab");
+        ScreenshotTab.Header = TextCatalog.Get(language, "ScreenshotTab");
         LanguageTitleText.Text = TextCatalog.Get(language, "Language");
         ChineseItem.Content = TextCatalog.Get(language, "Chinese");
         EnglishItem.Content = TextCatalog.Get(language, "English");
@@ -101,6 +114,18 @@ public partial class SettingsWindow : Window
         BenchmarkHotkeyLabel.Text = TextCatalog.Get(language, "BenchmarkHotkey");
         ExitHotkeyLabel.Text = TextCatalog.Get(language, "ExitHotkey");
         ScreenshotHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotHotkey");
+        ScreenshotHotkeysTitleText.Text = TextCatalog.Get(language, "ScreenshotHotkeys");
+        ScreenshotPenHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotPen");
+        ScreenshotArrowHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotArrow");
+        ScreenshotTextHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotText");
+        ScreenshotMosaicHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotMosaic");
+        ScreenshotEraserHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotEraser");
+        ScreenshotPinHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotPin");
+        ScreenshotCopyHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotCopy");
+        ScreenshotSaveHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotSave");
+        ScreenshotUndoHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotUndo");
+        ScreenshotRedoHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotRedo");
+        ScreenshotCopyRgbHotkeyLabel.Text = TextCatalog.Get(language, "ScreenshotRgbCopy");
         OverlayFieldsTitleText.Text = TextCatalog.Get(language, "OverlayFields");
         FieldColorHeaderText.Text = TextCatalog.Get(language, "FieldColor");
         ValueColorHeaderText.Text = TextCatalog.Get(language, "ValueColor");
@@ -302,9 +327,24 @@ public partial class SettingsWindow : Window
     {
         if (sender is System.Windows.Controls.TextBox textBox)
         {
-            textBox.Text = TextCatalog.Get(_store.Current.Language, "PressShortcut");
-            textBox.SelectAll();
+            textBox.CaretIndex = textBox.Text.Length;
+            textBox.SelectionLength = 0;
+            SetStatus(TextCatalog.Get(_store.Current.Language, "PressShortcut"));
         }
+    }
+
+    private void OnSettingsTabsSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!ReferenceEquals(e.OriginalSource, SettingsTabs))
+        {
+            return;
+        }
+
+        Dispatcher.InvokeAsync(() =>
+        {
+            Keyboard.ClearFocus();
+            SettingsTabs.Focus();
+        }, System.Windows.Threading.DispatcherPriority.ContextIdle);
     }
 
     private void OnHotkeyPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -350,6 +390,39 @@ public partial class SettingsWindow : Window
                     break;
                 case HotkeyTarget.Screenshot:
                     settings.Hotkeys.Screenshot = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotPen:
+                    settings.Hotkeys.ScreenshotPen = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotArrow:
+                    settings.Hotkeys.ScreenshotArrow = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotText:
+                    settings.Hotkeys.ScreenshotText = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotMosaic:
+                    settings.Hotkeys.ScreenshotMosaic = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotEraser:
+                    settings.Hotkeys.ScreenshotEraser = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotPin:
+                    settings.Hotkeys.ScreenshotPin = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotCopy:
+                    settings.Hotkeys.ScreenshotCopy = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotSave:
+                    settings.Hotkeys.ScreenshotSave = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotUndo:
+                    settings.Hotkeys.ScreenshotUndo = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotRedo:
+                    settings.Hotkeys.ScreenshotRedo = hotkey;
+                    break;
+                case HotkeyTarget.ScreenshotCopyRgb:
+                    settings.Hotkeys.ScreenshotCopyRgb = hotkey;
                     break;
             }
         });
@@ -436,6 +509,10 @@ public partial class SettingsWindow : Window
     {
         return
         [
+            TargetLabelColorButton,
+            TargetValueColorButton,
+            StatusLabelColorButton,
+            StatusValueColorButton,
             FpsLabelColorButton,
             FpsValueColorButton,
             AverageFpsLabelColorButton,
@@ -477,6 +554,61 @@ public partial class SettingsWindow : Window
             return HotkeyTarget.Screenshot;
         }
 
+        if (ReferenceEquals(textBox, ScreenshotPenHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotPen;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotArrowHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotArrow;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotTextHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotText;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotMosaicHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotMosaic;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotEraserHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotEraser;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotPinHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotPin;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotCopyHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotCopy;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotSaveHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotSave;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotUndoHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotUndo;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotRedoHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotRedo;
+        }
+
+        if (ReferenceEquals(textBox, ScreenshotCopyRgbHotkeyTextBox))
+        {
+            return HotkeyTarget.ScreenshotCopyRgb;
+        }
+
         return null;
     }
 
@@ -486,7 +618,18 @@ public partial class SettingsWindow : Window
         return target != HotkeyTarget.ToggleOverlay && hotkey.Equals(current.ToggleOverlay) ||
                target != HotkeyTarget.ToggleBenchmark && hotkey.Equals(current.ToggleBenchmark) ||
                target != HotkeyTarget.Exit && hotkey.Equals(current.Exit) ||
-               target != HotkeyTarget.Screenshot && hotkey.Equals(current.Screenshot);
+               target != HotkeyTarget.Screenshot && hotkey.Equals(current.Screenshot) ||
+               target != HotkeyTarget.ScreenshotPen && hotkey.Equals(current.ScreenshotPen) ||
+               target != HotkeyTarget.ScreenshotArrow && hotkey.Equals(current.ScreenshotArrow) ||
+               target != HotkeyTarget.ScreenshotText && hotkey.Equals(current.ScreenshotText) ||
+               target != HotkeyTarget.ScreenshotMosaic && hotkey.Equals(current.ScreenshotMosaic) ||
+               target != HotkeyTarget.ScreenshotEraser && hotkey.Equals(current.ScreenshotEraser) ||
+               target != HotkeyTarget.ScreenshotPin && hotkey.Equals(current.ScreenshotPin) ||
+               target != HotkeyTarget.ScreenshotCopy && hotkey.Equals(current.ScreenshotCopy) ||
+               target != HotkeyTarget.ScreenshotSave && hotkey.Equals(current.ScreenshotSave) ||
+               target != HotkeyTarget.ScreenshotUndo && hotkey.Equals(current.ScreenshotUndo) ||
+               target != HotkeyTarget.ScreenshotRedo && hotkey.Equals(current.ScreenshotRedo) ||
+               target != HotkeyTarget.ScreenshotCopyRgb && hotkey.Equals(current.ScreenshotCopyRgb);
     }
 
     private enum HotkeyTarget
@@ -494,6 +637,17 @@ public partial class SettingsWindow : Window
         ToggleOverlay,
         ToggleBenchmark,
         Exit,
-        Screenshot
+        Screenshot,
+        ScreenshotPen,
+        ScreenshotArrow,
+        ScreenshotText,
+        ScreenshotMosaic,
+        ScreenshotEraser,
+        ScreenshotPin,
+        ScreenshotCopy,
+        ScreenshotSave,
+        ScreenshotUndo,
+        ScreenshotRedo,
+        ScreenshotCopyRgb
     }
 }

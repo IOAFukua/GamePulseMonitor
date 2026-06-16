@@ -66,6 +66,17 @@ internal sealed class AppSettingsStore
             settings.Hotkeys.Exit ??= HotkeySettings.Default().Exit;
             settings.Hotkeys.ToggleBenchmark ??= HotkeySettings.Default().ToggleBenchmark;
             settings.Hotkeys.Screenshot ??= HotkeySettings.Default().Screenshot;
+            settings.Hotkeys.ScreenshotPen ??= HotkeySettings.Default().ScreenshotPen;
+            settings.Hotkeys.ScreenshotArrow ??= HotkeySettings.Default().ScreenshotArrow;
+            settings.Hotkeys.ScreenshotText ??= HotkeySettings.Default().ScreenshotText;
+            settings.Hotkeys.ScreenshotMosaic ??= HotkeySettings.Default().ScreenshotMosaic;
+            settings.Hotkeys.ScreenshotEraser ??= HotkeySettings.Default().ScreenshotEraser;
+            settings.Hotkeys.ScreenshotPin ??= HotkeySettings.Default().ScreenshotPin;
+            settings.Hotkeys.ScreenshotCopy ??= HotkeySettings.Default().ScreenshotCopy;
+            settings.Hotkeys.ScreenshotSave ??= HotkeySettings.Default().ScreenshotSave;
+            settings.Hotkeys.ScreenshotUndo ??= HotkeySettings.Default().ScreenshotUndo;
+            settings.Hotkeys.ScreenshotRedo ??= HotkeySettings.Default().ScreenshotRedo;
+            settings.Hotkeys.ScreenshotCopyRgb ??= HotkeySettings.Default().ScreenshotCopyRgb;
             return settings;
         }
         catch
