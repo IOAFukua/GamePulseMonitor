@@ -2,141 +2,102 @@
 
 Language: [中文](README.md) | English
 
-GamePulseMonitor is a lightweight Windows in-game monitor overlay built with C#/.NET WPF.
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/IOAFukua/GamePulseMonitor?style=flat-square&label=Version&color=10b981" alt="Version">
+  <img src="https://img.shields.io/github/license/IOAFukua/GamePulseMonitor?style=flat-square&label=License&color=10b981" alt="License">
+  <img src="https://img.shields.io/badge/.NET-8.0-blue?style=flat-square&logo=dotnet" alt=".NET 8">
+  <img src="https://img.shields.io/badge/platform-Windows-blue?style=flat-square&logo=windows" alt="Windows">
+  <img src="https://img.shields.io/github/stars/IOAFukua/GamePulseMonitor?style=flat-square&label=Stars" alt="Stars">
+  <img src="https://img.shields.io/github/downloads/IOAFukua/GamePulseMonitor/total?style=flat-square&label=Downloads" alt="Downloads">
+</p>
 
-It samples once per second and records:
+> 🎮 **Lightweight Windows in-game performance monitor overlay** · Real-time FPS, CPU, GPU, VRAM, RAM tracking, plus screenshot tool & pinned overlay!
 
-- FPS from the bundled PresentMon 1.9.2 collector
-- Average FPS and 1% low FPS for an `Alt+A` benchmark window
-- Average frame time for the current second
-- Total CPU usage and target process CPU usage
-- Total GPU usage from Windows GPU Engine counters
-- Dedicated/shared VRAM usage, including target-process VRAM when Windows exposes it
-- System RAM usage
+🌐 **[Official Website](https://www.gameicu.online)** · Features, screenshots and downloads
 
-## Download
+---
 
-Installers are available on the GitHub Release page:
+## ⚡ Features
 
-[Latest release](https://github.com/IOAFukua/GamePulseMonitor/releases/latest)
+| Feature | Description |
+|---------|-------------|
+| 🎯 **FPS Monitor** | Accurate FPS capture via PresentMon 1.9.2 |
+| 📊 **Benchmark Stats** | `Alt+A` avg FPS and 1% low FPS |
+| 🖥️ **System Resources** | CPU / GPU / VRAM / RAM real-time data |
+| 📈 **History Charts** | Per-date/per-process, Ctrl+wheel zoom |
+| ✂️ **Screenshot Region** | **New** In-game screenshot with annotation |
+| 📌 **Pinned Screenshot** | **New** Pin screenshot on top, Alt+drag to move |
+| 🎯 **Click-Through** | Doesn't steal game input |
+| 📝 **CSV Logging** | 1s interval recording |
+| 🌐 **Bilingual** | Chinese / English UI |
+| ⚙️ **Customizable** | Hotkeys, fields, colors, auto-start |
 
-Recommended packages:
+---
 
-- `GamePulseMonitorSetup-Lite.exe`: small package for PCs that already have Microsoft .NET 8 Desktop Runtime installed
-- `GamePulseMonitorSetup.exe`: full offline package for sharing with PCs that do not have .NET installed
+## 📥 Download
 
-The installer asks for an install folder before copying files. The default folder is `D:\GamePulseMonitor`. It also creates desktop and Start Menu shortcuts.
+[![Latest Release](https://img.shields.io/badge/Download-Latest_Release-10b981?style=for-the-badge&logo=github)](https://github.com/IOAFukua/GamePulseMonitor/releases/latest)
 
-## Run
+| Package | Description | Size |
+|---------|-------------|------|
+| `GamePulseMonitorSetup-Lite.exe` | Lite installer, needs .NET 8 Desktop Runtime | ~1 MB |
+| `GamePulseMonitorSetup.exe` | Full offline package | ~61 MB |
+| `GamePulseMonitor-portable-lite-win-x64.zip` | Lite portable | ~0.7 MB |
+| `GamePulseMonitor-portable-win-x64.zip` | Full portable | ~62 MB |
+
+Winget:
+```
+winget install IOAFukua.GamePulseMonitor
+```
+
+---
+
+## 🚀 Quick Start
 
 ```powershell
+# Dev run
 .\scripts\run.ps1
-```
 
-If PowerShell script execution is blocked, use:
-
-```powershell
+# If PowerShell execution policy blocks
 .\scripts\run.cmd
-```
 
-The app requests administrator permission because real-time PresentMon/ETW FPS capture needs elevated access on Windows.
-
-By default it follows the current foreground process. To lock it to a game:
-
-```powershell
+# Lock to a specific process
 .\scripts\run.ps1 -ProcessName game.exe
-```
 
-Useful options:
-
-```powershell
+# Custom position
 .\scripts\run.ps1 -ProcessName game.exe -Left 32 -Top 32
-.\scripts\run.ps1 -NoClickThrough
 ```
 
-## Hotkeys
+---
 
-- `Alt+A`: start or stop the average FPS / 1% low benchmark window
-- `Ctrl+Shift+F11`: show or hide the overlay
-- `Ctrl+Shift+F12`: exit
+## ⌨️ Hotkeys
 
-Right-click the tray icon and choose `Settings` to toggle Windows startup, switch language, configure hotkeys, and choose which overlay fields are visible. Chinese is the default language; English is also available.
+| Hotkey | Action |
+|--------|--------|
+| `Alt+A` | Start/stop avg FPS benchmark |
+| `Ctrl+Shift+S` | **New** Screenshot region capture |
+| `Ctrl+Shift+F11` | Show/hide overlay |
+| `Ctrl+Shift+F12` | Exit |
+| `Alt+Drag` | Move overlay |
+| `Ctrl+Wheel` | Zoom history chart |
+| Double-click pin | **New** Destroy pinned screenshot |
 
-Average FPS and 1% low are disabled by default. Press `Alt+A` once to clear previous values and start measuring the current target; press `Alt+A` again to stop and keep the result on screen.
+---
 
-Hold `Alt` and drag the overlay with the left mouse button to move it. In normal mode the overlay remains click-through so it does not steal game input.
-
-Hold `Alt` and point at an overlay field to see a detailed explanation of that value.
-
-The tray icon also has show/hide and exit actions.
-
-## Curves
-
-Historical curve data is stored locally and can be viewed by date and process.
-
-- Realtime mode: shows the latest 3 minutes and updates as samples arrive
-- History mode: shows the selected date, process, and time range without live updates
-- `Ctrl + mouse wheel`: zoom the chart time range in or out
-- Hover a curve node: show the exact timestamp and value for that sample
-
-## Logs
-
-CSV logs are written once per second under:
-
-```text
-src\GamePulseMonitor\bin\Release\net8.0-windows10.0.17763.0\logs
-```
-
-When using published output, logs are written to the `logs` folder next to `GamePulseMonitor.exe`.
-
-## Publish
+## 🏗️ Building
 
 ```powershell
-.\scripts\publish.ps1
+# Publish
+.\scripts\publish.ps1  # or .\scripts\publish.cmd
+
+# Build installer
+.\scripts\build-installer.ps1  # or .\scripts\build-installer.cmd
 ```
 
-or:
+Output: `artifacts/GamePulseMonitor/`
 
-```powershell
-.\scripts\publish.cmd
-```
+---
 
-Published files are placed in:
+## 📄 License
 
-```text
-artifacts\GamePulseMonitor
-```
-
-## Build Installer
-
-```powershell
-.\scripts\build-installer.ps1
-```
-
-or:
-
-```powershell
-.\scripts\build-installer.cmd
-```
-
-This creates a self-contained x64 Windows installer and a portable zip:
-
-```text
-artifacts\GamePulseMonitorSetup.exe
-artifacts\GamePulseMonitor-portable-win-x64.zip
-```
-
-It also creates a small framework-dependent package:
-
-```text
-artifacts\GamePulseMonitorSetup-Lite.exe
-artifacts\GamePulseMonitor-portable-lite-win-x64.zip
-```
-
-Use the Lite package when the target PC already has Microsoft .NET 8 Desktop Runtime installed. Use the normal package for offline sharing without installing .NET first.
-
-## Notes
-
-The overlay is a transparent topmost window, so it works best with windowed or borderless fullscreen games. Exclusive fullscreen games can prevent normal desktop overlays from appearing unless the game or driver supports composition over exclusive mode.
-
-FPS capture is handled by the bundled Intel PresentMon console collector under `tools\presentmon\PresentMon.exe`; GamePulseMonitor prefers displayed-frame timing (`MsBetweenDisplayChange` / `DisplayedTime`) from its live CSV stream and falls back to present timing when display timing is unavailable.
+MIT License — see [LICENSE](LICENSE).

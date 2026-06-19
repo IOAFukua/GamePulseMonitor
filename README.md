@@ -2,143 +2,168 @@
 
 语言：中文 | [English](README.en.md)
 
-GamePulseMonitor 是一个基于 C#/.NET WPF 开发的轻量级 Windows 游戏内性能监控悬浮窗。
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/IOAFukua/GamePulseMonitor?style=flat-square&label=版本&color=10b981" alt="Version">
+  <img src="https://img.shields.io/github/license/IOAFukua/GamePulseMonitor?style=flat-square&label=许可&color=10b981" alt="License">
+  <img src="https://img.shields.io/badge/.NET-8.0-blue?style=flat-square&logo=dotnet" alt=".NET 8">
+  <img src="https://img.shields.io/badge/platform-Windows-blue?style=flat-square&logo=windows" alt="Windows">
+  <img src="https://img.shields.io/github/stars/IOAFukua/GamePulseMonitor?style=flat-square&label=Stars" alt="Stars">
+  <img src="https://img.shields.io/github/downloads/IOAFukua/GamePulseMonitor/total?style=flat-square&label=下载" alt="Downloads">
+</p>
 
-软件每 1 秒采样一次，并记录：
+> 🎮 **轻量级 Windows 游戏内性能监控悬浮窗** · 实时追踪 FPS、CPU、GPU、显存与内存，还带截图工具和悬浮钉图！
 
-- FPS，来自内置 PresentMon 1.9.2 采集器
-- `Alt+A` 基准统计窗口内的平均 FPS 和 1% Low FPS
-- 当前秒的平均帧时
-- 总 CPU 占用率和目标进程 CPU 占用率
-- Windows GPU Engine 计数器提供的总 GPU 占用率
-- 独立/共享显存占用，包括 Windows 可提供时的目标进程显存占用
-- 系统内存占用
+🌐 **[官方主页](https://www.gameicu.online)** · 查看功能介绍、截图和下载
 
-## 下载
+---
 
-请在 GitHub Release 页面下载安装包：
+## 📸 预览
 
-[最新版本](https://github.com/IOAFukua/GamePulseMonitor/releases/latest)
+### 实时悬浮窗
+```
+┌──────────────────────────────────────┐
+│  FPS                        144.0    │
+│  Avg                        141.2    │
+│  1% Low                     98.0     │
+│  ───────────────────────────         │
+│  Frame Time                 6.9 ms   │
+│  ───────────────────────────         │
+│  CPU          ████████▌     34%      │
+│  GPU          ████████████▌ 72%      │
+│  VRAM         █████▋        4.2/8.0  │
+│  RAM          ████████████▌ 12.8 GB  │
+└──────────────────────────────────────┘
+```
 
-推荐选择：
+### ✂️ 截图选区 & 悬浮钉图（v0.2.0 新功能）
+游戏内按 `Ctrl+Shift+S` 唤起截图，拖拽选区和标注工具，一键钉在屏幕上。支持画笔、箭头、文字、马赛克等标注。
 
-- `GamePulseMonitorSetup-Lite.exe`：体积小，适合已经安装 Microsoft .NET 8 Desktop Runtime 的电脑
-- `GamePulseMonitorSetup.exe`：完整离线包，适合分享给没有安装 .NET 环境的电脑
+---
 
-安装程序会在安装前让用户选择安装目录，默认目录是 `D:\GamePulseMonitor`，并会创建桌面和开始菜单快捷方式。
+## ⚡ 核心功能
 
-## 运行
+| 功能 | 说明 |
+|------|------|
+| 🎯 **FPS 监控** | 基于 PresentMon 1.9.2 的精准 FPS 采集 |
+| 📊 **基准统计** | `Alt+A` 统计平均 FPS 和 1% Low FPS |
+| 🖥️ **系统资源** | CPU / GPU / VRAM / RAM 实时数据 |
+| 📈 **历史曲线** | 按日期和进程查看，Ctrl+滚轮缩放，节点详情 |
+| ✂️ **截图选区** | **新版** 游戏内截图，拖拽选区，自由标注 |
+| 📌 **悬浮钉图** | **新版** 截图钉在屏幕最上层，Alt+拖动调整 |
+| 🎯 **鼠标穿透** | 不抢占游戏输入，Alt 激活交互 |
+| 📝 **CSV 日志** | 每秒记录，方便后期分析 |
+| 🌐 **多语言** | 中文 / English 界面切换 |
+| ⚙️ **自定义** | 快捷键、字段显隐、颜色、开机自启 |
 
-开发环境中可以直接运行：
+---
+
+## 📥 下载
+
+[![最新版本](https://img.shields.io/badge/下载-最新版本-10b981?style=for-the-badge&logo=github)](https://github.com/IOAFukua/GamePulseMonitor/releases/latest)
+
+| 安装包 | 说明 | 大小 |
+|--------|------|------|
+| `GamePulseMonitorSetup-Lite.exe` | 轻量安装包，需 .NET 8 Desktop Runtime | ~1 MB |
+| `GamePulseMonitorSetup.exe` | 完整离线包，无需预装 .NET | ~61 MB |
+| `GamePulseMonitor-portable-lite-win-x64.zip` | 轻量便携版 | ~0.7 MB |
+| `GamePulseMonitor-portable-win-x64.zip` | 完整便携版 | ~62 MB |
+
+也可以通过 Winget 安装：
+```
+winget install IOAFukua.GamePulseMonitor
+```
+
+---
+
+## 🚀 快速开始
 
 ```powershell
+# 开发运行
 .\scripts\run.ps1
-```
 
-如果 PowerShell 脚本执行被系统策略阻止，可以使用：
-
-```powershell
+# 如果 PowerShell 策略阻止
 .\scripts\run.cmd
-```
 
-软件会请求管理员权限，因为实时 PresentMon/ETW FPS 采集在 Windows 上需要提升权限。
-
-默认会跟随当前前台进程。也可以锁定到指定游戏进程：
-
-```powershell
+# 锁定到指定进程
 .\scripts\run.ps1 -ProcessName game.exe
-```
 
-常用参数：
-
-```powershell
+# 指定位置
 .\scripts\run.ps1 -ProcessName game.exe -Left 32 -Top 32
-.\scripts\run.ps1 -NoClickThrough
 ```
 
-## 快捷键
+---
 
-- `Alt+A`：开始或停止平均 FPS / 1% Low 统计窗口
-- `Ctrl+Shift+F11`：显示或隐藏悬浮窗
-- `Ctrl+Shift+F12`：退出程序
+## ⌨️ 快捷键
 
-右键托盘图标并选择“设置”，可以开启或关闭开机自启动、切换语言、配置快捷键，以及选择悬浮窗字段的显示与隐藏。软件默认语言是中文，也内置英文。
+| 快捷键 | 功能 |
+|--------|------|
+| `Alt+A` | 开始/停止平均 FPS 统计 |
+| `Ctrl+Shift+S` | **新版** 唤起截图选区 |
+| `Ctrl+Shift+F11` | 显示/隐藏悬浮窗 |
+| `Ctrl+Shift+F12` | 退出程序 |
+| `Alt+拖动` | 移动悬浮窗位置 |
+| `Ctrl+滚轮` | 历史曲线缩放 |
+| 双击钉图 | **新版** 销毁截图 |
 
-平均 FPS 和 1% Low 默认不开启。按一次 `Alt+A` 会清空旧结果并开始统计当前目标；再次按下 `Alt+A` 会停止统计，并保留本次结果显示在界面上。
+---
 
-按住 `Alt` 后，可以用鼠标左键拖动悬浮窗位置。普通状态下悬浮窗保持鼠标穿透，不会抢占游戏输入。
+## 🏗️ 从源码构建
 
-按住 `Alt` 并指向悬浮窗中的某个字段，可以查看该字段数值的详细说明。
+### 环境要求
+- Windows 10/11
+- .NET 8 SDK
+- Visual Studio 2022 (推荐)
 
-托盘菜单还提供显示/隐藏和退出操作。
-
-## 曲线图
-
-历史曲线数据会保存在本地，用户可以按日期和进程查看。
-
-- 实时模式：显示最近 3 分钟数据，并随采样实时刷新
-- 历史模式：按用户选择的日期、进程和时间区间查看，不自动刷新
-- `Ctrl + 鼠标滚轮`：在曲线图上放大或缩小时间范围
-- 鼠标指向曲线节点：显示该节点的具体时间和值
-
-## 日志
-
-CSV 日志每秒写入一次。开发运行时默认位于：
-
-```text
-src\GamePulseMonitor\bin\Release\net8.0-windows10.0.17763.0\logs
-```
-
-使用发布后的程序时，日志会写入 `GamePulseMonitor.exe` 同级目录下的 `logs` 文件夹。
-
-## 发布
+### 构建步骤
 
 ```powershell
+# 发布
 .\scripts\publish.ps1
-```
-
-或：
-
-```powershell
+# 或
 .\scripts\publish.cmd
-```
 
-发布文件会输出到：
-
-```text
-artifacts\GamePulseMonitor
-```
-
-## 构建安装包
-
-```powershell
+# 构建安装包
 .\scripts\build-installer.ps1
-```
-
-或：
-
-```powershell
+# 或
 .\scripts\build-installer.cmd
 ```
 
-该脚本会生成 x64 Windows 完整安装包和 portable zip：
+构建产物会输出到 `artifacts/GamePulseMonitor` 目录。
 
-```text
-artifacts\GamePulseMonitorSetup.exe
-artifacts\GamePulseMonitor-portable-win-x64.zip
+---
+
+## 📁 项目结构
+
+```
+GamePulseMonitor/
+├── src/
+│   └── GamePulseMonitor/          # 主程序 (WPF)
+├── scripts/                       # 构建/运行脚本
+│   ├── run.ps1 / run.cmd
+│   ├── publish.ps1 / publish.cmd
+│   └── build-installer.ps1 / .cmd
+├── tools/
+│   ├── presentmon/                # PresentMon 组件
+│   └── presentmon1/
+├── CHANGELOG.md                   # 版本更新日志
+├── CONTRIBUTING.md                # 贡献指南
+├── LICENSE                        # MIT 许可证
+├── README.md / README.en.md       # 中英文文档
+└── GamePulseMonitor.sln           # 解决方案文件
 ```
 
-同时也会生成体积更小的框架依赖版：
+---
 
-```text
-artifacts\GamePulseMonitorSetup-Lite.exe
-artifacts\GamePulseMonitor-portable-lite-win-x64.zip
-```
+## 🤝 贡献
 
-目标电脑已经安装 Microsoft .NET 8 Desktop Runtime 时，建议使用 Lite 包。需要离线分享、无需用户先安装 .NET 时，建议使用完整包。
+欢迎贡献代码、报告 Bug 或提出新功能！
 
-## 注意事项
+- [提交 Bug 报告](https://github.com/IOAFukua/GamePulseMonitor/issues/new?template=bug_report.md)
+- [提出功能建议](https://github.com/IOAFukua/GamePulseMonitor/issues/new?template=feature_request.md)
+- 查阅 [CONTRIBUTING.md](CONTRIBUTING.md) 了解开发指引
 
-悬浮窗是透明置顶窗口，最适合窗口化或无边框全屏游戏。独占全屏游戏可能阻止普通桌面悬浮窗显示，除非游戏或显卡驱动支持在独占模式上叠加桌面组合层。
+---
 
-FPS 采集由内置 Intel PresentMon 控制台采集器完成，路径为 `tools\presentmon\PresentMon.exe`。GamePulseMonitor 优先使用实时 CSV 流中的显示帧时间数据（`MsBetweenDisplayChange` / `DisplayedTime`），当显示时间不可用时会回退到 Present 时间。
+## 📄 许可
+
+本项目采用 MIT 许可证 — 详见 [LICENSE](LICENSE) 文件。
